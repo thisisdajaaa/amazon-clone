@@ -1,12 +1,18 @@
 import { useSession } from "next-auth/client";
-import React from "react";
+import React, { FC } from "react";
 import { db } from "../../firebase";
 import Header from "../components/Header";
 import moment from "moment";
 import Order from "../components/Order";
 import { getSession } from "next-auth/client";
+import { OrderType } from "@type/order";
+import { GetServerSideProps } from "next";
 
-const Orders = ({ orders }) => {
+interface OrdersProps {
+  orders: OrderType[];
+}
+
+const Orders: FC<OrdersProps> = ({ orders }) => {
   const [session] = useSession();
 
   return (
@@ -25,20 +31,7 @@ const Orders = ({ orders }) => {
         )}
 
         <div className="mt-5 space-y-4">
-          {orders &&
-            orders?.map(
-              ({ id, amount, amountShipping, items, timestamp, images }) => (
-                <Order
-                  key={id}
-                  id={id}
-                  amount={amount}
-                  amountShipping={amountShipping}
-                  items={items}
-                  timestamp={timestamp}
-                  images={images}
-                />
-              )
-            )}
+          {orders && orders?.map((order) => <Order data={order} />)}
         </div>
       </main>
     </div>
@@ -47,7 +40,7 @@ const Orders = ({ orders }) => {
 
 export default Orders;
 
-export async function getServerSideProps(context) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
   // Get the users logged in credentials
@@ -59,7 +52,7 @@ export async function getServerSideProps(context) {
 
   const stripeOrders = await db
     .collection("users")
-    .doc(session.user.email)
+    .doc(session?.user?.email as string)
     .collection("orders")
     .orderBy("timestamp", "desc")
     .get();
@@ -85,4 +78,4 @@ export async function getServerSideProps(context) {
       session,
     },
   };
-}
+};

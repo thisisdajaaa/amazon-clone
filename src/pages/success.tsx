@@ -1,9 +1,9 @@
-import React from "react";
+import React, { FC } from "react";
 import { CheckCircleIcon } from "@heroicons/react/solid";
 import Header from "../components/Header";
 import { useRouter } from "next/router";
 
-const Success = () => {
+const Success: FC = () => {
   const router = useRouter();
 
   return (
