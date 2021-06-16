@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import Image from "next/image";
 import {
   MenuIcon,
@@ -8,9 +8,9 @@ import {
 import { signIn, signOut, useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
-import { selectItems } from "../slices/basketSlice";
+import { selectItems } from "@slices/basketSlice";
 
-const Header = () => {
+const Header: FC = () => {
   const [session] = useSession();
   const router = useRouter();
 
@@ -39,8 +39,11 @@ const Header = () => {
         </div>
 
         <div className="text-white flex items-center text-xs space-x-6 mx-6 whitespace-nowrap">
-          <div onClick={!session ? signIn : signOut} className="link">
-            <p>{session ? `Hello, ${session.user.name}` : "Sign In"}</p>
+          <div
+            onClick={() => (!session ? signIn() : signOut())}
+            className="link"
+          >
+            <p>{session ? `Hello, ${session?.user?.name}` : "Sign In"}</p>
             <p className="font-extrabold md:text-sm">Account & Lists</p>
           </div>
 

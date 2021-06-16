@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import { StarIcon } from "@heroicons/react/solid";
 import Currency from "react-currency-formatter";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
-import { addToBasket } from "../slices/basketSlice";
+import { addToBasket } from "@slices/basketSlice";
+import { ProductType } from "@type/product";
+import { MAX_RATING, MIN_RATING } from "@config/constants";
 
-const MAX_RATING = 5;
-const MIN_RATING = 1;
+interface ProductProps {
+  data: ProductType;
+}
 
-const Product = ({ id, title, price, description, category, image }) => {
+const Product: FC<ProductProps> = ({ data }) => {
   const dispatch = useDispatch();
 
   const [rating] = useState(
@@ -17,19 +20,11 @@ const Product = ({ id, title, price, description, category, image }) => {
 
   const [hasPrime] = useState(Math.random() < 0.5);
 
+  const { title, price, description, category, image } = data;
+
   const addItemToBasket = () => {
     try {
-      const product = {
-        id,
-        title,
-        price,
-        description,
-        category,
-        image,
-        hasPrime,
-      };
-
-      dispatch(addToBasket(product));
+      dispatch(addToBasket({ product: data }));
     } catch (error) {
       console.error(error);
     }
@@ -47,7 +42,7 @@ const Product = ({ id, title, price, description, category, image }) => {
 
       <div className="flex">
         {Array(rating)
-          .fill()
+          .fill(rating)
           .map((_, i) => (
             <StarIcon key={i} className="h-5 text-yellow-500" />
           ))}

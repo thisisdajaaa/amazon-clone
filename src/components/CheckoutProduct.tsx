@@ -1,39 +1,33 @@
-import React from "react";
+import React, { FC, useState } from "react";
 import Image from "next/image";
 import Currency from "react-currency-formatter";
 import { StarIcon } from "@heroicons/react/outline";
 import { useDispatch } from "react-redux";
-import { addToBasket, removeFromBasket } from "../slices/basketSlice";
+import { MIN_RATING, MAX_RATING } from "@config/constants";
+import { addToBasket, removeFromBasket } from "@slices/basketSlice";
+import { ProductType } from "@type/product";
 
-const CheckoutProduct = ({
-  id,
-  title,
-  price,
-  rating,
-  description,
-  category,
-  image,
-  hasPrime,
-}) => {
+interface CheckoutProductProps {
+  data: ProductType;
+  count: number;
+}
+
+const CheckoutProduct: FC<CheckoutProductProps> = ({ data }) => {
   const dispatch = useDispatch();
 
-  const addItemToBasket = () => {
-    const product = {
-      id,
-      title,
-      price,
-      rating,
-      description,
-      category,
-      image,
-      hasPrime,
-    };
+  const [rating] = useState(
+    Math.floor(Math.random() * (MAX_RATING - MIN_RATING + 1)) + MIN_RATING
+  );
+  const [hasPrime] = useState(Math.random() < 0.5);
 
-    dispatch(addToBasket(product));
+  const { title, price, id, description, image } = data;
+
+  const addItemToBasket = () => {
+    dispatch(addToBasket({ product: data }));
   };
 
   const removeItemToBasket = () => {
-    dispatch(removeFromBasket({ id }));
+    dispatch(removeFromBasket(id));
   };
 
   return (
@@ -44,7 +38,7 @@ const CheckoutProduct = ({
         <p>{title}</p>
         <div className="flex">
           {Array(rating)
-            .fill()
+            .fill(rating)
             .map((_, i) => (
               <StarIcon key={i} className="h-5 text-yellow-500" />
             ))}
