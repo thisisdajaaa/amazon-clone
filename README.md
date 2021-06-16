@@ -26,7 +26,7 @@
   <a href="#license">License</a>
 </p>
 
-![Template Screenshot](public/images/app.png?raw=true "Template Screenshot")
+![Template Screenshot](public/app.png?raw=true "Template Screenshot")
 
 ---
 
